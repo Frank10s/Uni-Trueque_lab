@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uni-Trueque — Publicar Producto</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { background: var(--cream); }
+  .publish-hero {
+    background: var(--white); padding: 100px 5vw 40px;
+    border-bottom: 1px solid rgba(26,122,74,0.08);
+  }
+  .publish-hero h1 { font-family:'Syne',sans-serif; font-size:clamp(2rem,4vw,3rem); font-weight:800; letter-spacing:-1px; margin-bottom:0.5rem; }
+  .publish-hero p { color:var(--earth-mid); font-size:1rem; }
+
+  .publish-body { display:grid; grid-template-columns:1fr 380px; gap:3rem; padding:3rem 5vw; align-items:start; }
+
+  /* FORM */
+  .publish-form { background:white; border-radius:24px; padding:2.5rem; box-shadow:var(--shadow); border:1.5px solid rgba(26,122,74,0.08); }
+  .publish-form h2 { font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:800; margin-bottom:1.8rem; display:flex; align-items:center; gap:10px; }
+
+  .upload-area {
+    border:2.5px dashed rgba(26,122,74,0.3); border-radius:16px;
+    padding:2.5rem; text-align:center; cursor:pointer;
+    transition:all 0.2s; background:var(--green-pale); margin-bottom:1.5rem;
+    position:relative;
+  }
+  .upload-area:hover { border-color:var(--green); background:rgba(26,122,74,0.07); }
+  .upload-area.drag { border-color:var(--green); background:rgba(26,122,74,0.1); }
+  .upload-icon { font-size:2.5rem; margin-bottom:10px; }
+  .upload-area p { font-size:0.88rem; color:var(--earth-mid); }
+  .upload-area strong { color:var(--green); }
+  .upload-preview { display:none; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  .preview-thumb { width:70px; height:70px; border-radius:10px; background:var(--gray-light); display:flex; align-items:center; justify-content:center; font-size:1.8rem; border:1.5px solid rgba(26,122,74,0.2); }
+
+  .form-group { margin-bottom:1.2rem; }
+  .form-group label { display:block; font-size:0.82rem; font-weight:600; margin-bottom:5px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width:100%; padding:11px 16px; border:1.5px solid rgba(0,0,0,0.1); border-radius:12px;
+    font-family:'DM Sans',sans-serif; font-size:0.9rem; color:var(--earth);
+    outline:none; transition:border-color 0.2s, box-shadow 0.2s; background:var(--cream);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(26,122,74,0.10); }
+  .form-group textarea { resize:vertical; min-height:100px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .char-count { font-size:0.72rem; color:var(--gray); text-align:right; margin-top:3px; }
+
+  .intercambio-section { background:var(--green-pale); border-radius:14px; padding:1.2rem; margin-bottom:1.5rem; }
+  .intercambio-section h4 { font-family:'Syne',sans-serif; font-size:0.88rem; font-weight:700; color:var(--green); margin-bottom:8px; }
+  .intercambio-section input { background:white; }
+
+  .btn-publish { width:100%; justify-content:center; border-radius:14px; font-size:1rem; padding:15px; }
+
+  /* SIDEBAR INFO */
+  .publish-sidebar { display:flex; flex-direction:column; gap:1.5rem; }
+  .info-card { background:white; border-radius:20px; padding:1.8rem; box-shadow:var(--shadow); border:1.5px solid rgba(26,122,74,0.07); }
+  .info-card h3 { font-family:'Syne',sans-serif; font-size:0.98rem; font-weight:800; margin-bottom:1rem; }
+  .tip { display:flex; gap:12px; margin-bottom:1rem; }
+  .tip:last-child { margin-bottom:0; }
+  .tip-icon { font-size:1.4rem; flex-shrink:0; margin-top:2px; }
+  .tip h4 { font-size:0.85rem; font-weight:600; margin-bottom:2px; }
+  .tip p { font-size:0.8rem; color:var(--gray); line-height:1.5; }
+
+  .preview-card { background:var(--cream); border-radius:20px; overflow:hidden; border:1.5px solid rgba(26,122,74,0.1); }
+  .preview-card-img { height:130px; background:linear-gradient(135deg,var(--green-pale),var(--amber-light)); display:flex; align-items:center; justify-content:center; font-size:4rem; }
+  .preview-card-body { padding:14px 16px; }
+  .preview-card-title { font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; margin-bottom:4px; color:var(--gray); }
+  .preview-card-desc { font-size:0.8rem; color:var(--gray); }
+
+  .steps-mini { display:flex; flex-direction:column; gap:12px; }
+  .step-mini { display:flex; gap:12px; align-items:flex-start; }
+  .step-mini-num { width:26px; height:26px; border-radius:50%; background:var(--green); color:white; font-size:0.72rem; font-weight:700; font-family:'Syne',sans-serif; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .step-mini-text h5 { font-size:0.85rem; font-weight:600; margin-bottom:2px; }
+  .step-mini-text p { font-size:0.78rem; color:var(--gray); line-height:1.4; }
+
+  @media (max-width:900px) { .publish-body { grid-template-columns:1fr; } .form-row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">🌿 Uni<span>-Trueque</span></a>
+  <div class="nav-links">
+    <a href="catalogo.html" class="hide-mobile">Catálogo</a>
+    <a href="publicar.html" class="active">Publicar</a>
+    <a href="perfil.html" class="hide-mobile">Mi perfil</a>
+    <a href="impacto.html" class="hide-mobile">Impacto</a>
+    <a href="login.html" class="btn-nav">Ingresar</a>
+  </div>
+</nav>
+
+<div class="page-content">
+  <div class="publish-hero">
+    <div class="section-label">Publicar</div>
+    <h1>📦 Comparte lo que ya no usas</h1>
+    <p>Dale una segunda vida a tus materiales y conecta con compañeros que los necesitan.</p>
+  </div>
+
+  <div class="publish-body">
+    <!-- FORM -->
+    <div class="publish-form reveal">
+      <h2>📷 Nuevo producto</h2>
+
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">📸</div>
+        <p><strong>Arrastra tus fotos aquí</strong> o haz clic para subir</p>
+        <p style="font-size:0.75rem;margin-top:5px;opacity:0.7">JPG, PNG hasta 10MB · Máx. 5 fotos</p>
+        <div class="upload-preview" id="uploadPreview">
+          <div class="preview-thumb">📚</div>
+          <div class="preview-thumb" style="border-style:dashed;opacity:0.4">+</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Título del producto *</label>
+        <input type="text" id="titleInput" placeholder="Ej: Cálculo diferencial — Stewart 7ma edición" maxlength="80" oninput="updatePreview()" />
+        <div class="char-count"><span id="charCount">0</span>/80</div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Categoría *</label>
+          <select>
+            <option value="">Seleccionar...</option>
+            <option>📚 Libros</option>
+            <option>✏️ Útiles de escritorio</option>
+            <option>💻 Electrónica</option>
+            <option>🧪 Material de laboratorio</option>
+            <option>📐 Instrumentos de dibujo</option>
+            <option>👕 Indumentaria / Batas</option>
+            <option>🎒 Mochilas y bolsos</option>
+            <option>📦 Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estado del producto *</label>
+          <select>
+            <option>🆕 Nuevo (sin uso)</option>
+            <option>✅ Muy bueno</option>
+            <option>👍 Bueno</option>
+            <option>⚠️ Regular (con detalles)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción *</label>
+        <textarea id="descInput" placeholder="Describe el artículo: edición, detalles, qué tan usado está, por qué lo intercambias..." maxlength="400" oninput="updateDescCount()"></textarea>
+        <div class="char-count"><span id="descCount">0</span>/400</div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Facultad</label>
+          <select>
+            <option>Ingeniería de Sistemas</option>
+            <option>Medicina</option>
+            <option>Arquitectura</option>
+            <option>Administración</option>
+            <option>Derecho</option>
+            <option>Psicología</option>
+            <option>Otra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Modalidad</label>
+          <select>
+            <option>🔄 Trueque directo</option>
+            <option>🎁 Donación</option>
+            <option>🤝 Préstamo temporal</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="intercambio-section">
+        <h4>🔄 ¿Qué buscas a cambio?</h4>
+        <input type="text" placeholder="Ej: Libros de programación, mouse, calculadora..." />
+      </div>
+
+      <button class="btn-primary btn-publish">🚀 Publicar producto</button>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="publish-sidebar reveal">
+      <!-- Preview -->
+      <div class="info-card">
+        <h3>👁 Vista previa</h3>
+        <div class="preview-card">
+          <div class="preview-card-img">📦</div>
+          <div class="preview-card-body">
+            <div class="preview-card-title" id="previewTitle">Tu título aparecerá aquí</div>
+            <div class="preview-card-desc" id="previewDesc">La descripción se mostrará aquí...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="info-card">
+        <h3>💡 Consejos para publicar</h3>
+        <div class="tip"><div class="tip-icon">📸</div><div><h4>Fotos claras</h4><p>Sube al menos 2 fotos con buena iluminación. Muestra el estado real del producto.</p></div></div>
+        <div class="tip"><div class="tip-icon">📝</div><div><h4>Descripción detallada</h4><p>Menciona edición, detalles de uso y el estado actual. Más info = más intercambios.</p></div></div>
+        <div class="tip"><div class="tip-icon">🔄</div><div><h4>Sé específico</h4><p>Indica exactamente qué buscas a cambio para encontrar al compañero ideal.</p></div></div>
+      </div>
+
+      <!-- Process -->
+      <div class="info-card">
+        <h3>📋 ¿Qué pasa después?</h3>
+        <div class="steps-mini">
+          <div class="step-mini"><div class="step-mini-num">1</div><div class="step-mini-text"><h5>Se publica</h5><p>Tu producto aparece en el catálogo visible para todos.</p></div></div>
+          <div class="step-mini"><div class="step-mini-num">2</div><div class="step-mini-text"><h5>Recibes solicitudes</h5><p>Compañeros interesados te contactarán por mensajes internos.</p></div></div>
+          <div class="step-mini"><div class="step-mini-num">3</div><div class="step-mini-text"><h5>Coordinas</h5><p>Acuerdan lugar y momento para el intercambio en el campus.</p></div></div>
+          <div class="step-mini"><div class="step-mini-num">4</div><div class="step-mini-text"><h5>¡Impacto registrado!</h5><p>El intercambio suma a tus estadísticas y al impacto global.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="logo-footer">🌿 Uni<span>-Trueque</span></div>
+  <p>Intercambia materiales · Solo para @continental.edu.pe · © 2026</p>
+</footer>
+
+<script>
+  function updatePreview() {
+    const val = document.getElementById('titleInput').value;
+    document.getElementById('charCount').textContent = val.length;
+    document.getElementById('previewTitle').textContent = val || 'Tu título aparecerá aquí';
+  }
+  function updateDescCount() {
+    const val = document.getElementById('descInput').value;
+    document.getElementById('descCount').textContent = val.length;
+    document.getElementById('previewDesc').textContent = val || 'La descripción se mostrará aquí...';
+  }
+  document.getElementById('uploadArea').addEventListener('click', () => {
+    document.getElementById('uploadPreview').style.display = 'flex';
+  });
+  const obs = new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

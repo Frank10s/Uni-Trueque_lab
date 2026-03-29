@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+:root {
+  --green: #1a7a4a;
+  --green-light: #2eb870;
+  --green-pale: #e8f5ee;
+  --amber: #f5a623;
+  --amber-light: #ffd47e;
+  --earth: #3b2a1a;
+  --earth-mid: #7a5c3e;
+  --cream: #faf7f2;
+  --white: #ffffff;
+  --gray: #8a8a8a;
+  --gray-light: #f0ede8;
+  --shadow: 0 4px 32px rgba(26,122,74,0.10);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--earth);
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5vw; height: 68px;
+  background: rgba(250,247,242,0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(26,122,74,0.08);
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 1.35rem;
+  color: var(--green); text-decoration: none;
+  display: flex; align-items: center; gap: 8px;
+  letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--amber); }
+.nav-links { display: flex; align-items: center; gap: 1.6rem; }
+.nav-links a {
+  font-size: 0.88rem; font-weight: 500;
+  color: var(--earth-mid); text-decoration: none;
+  transition: color 0.2s; white-space: nowrap;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--green); }
+.btn-nav {
+  background: var(--green) !important;
+  color: var(--white) !important;
+  padding: 8px 20px; border-radius: 100px;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 16px rgba(26,122,74,0.2);
+  transition: background 0.2s, transform 0.15s !important;
+}
+.btn-nav:hover { background: var(--green-light) !important; transform: translateY(-1px); }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--green); color: var(--white);
+  padding: 14px 30px; border-radius: 100px;
+  font-size: 0.98rem; font-weight: 600; font-family: 'DM Sans', sans-serif;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 24px rgba(26,122,74,0.25);
+}
+.btn-primary:hover { background: var(--green-light); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(26,122,74,0.32); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--green);
+  padding: 14px 24px; border-radius: 100px;
+  font-size: 0.98rem; font-weight: 600; font-family: 'DM Sans', sans-serif;
+  text-decoration: none; border: 2px solid var(--green); cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { background: var(--green-pale); }
+
+/* ── SECTION COMMON ── */
+.page-content { padding-top: 68px; }
+.section-label {
+  font-size: 0.8rem; font-weight: 600;
+  color: var(--green); letter-spacing: 1.5px;
+  text-transform: uppercase; margin-bottom: 0.8rem;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -1px; margin-bottom: 1rem;
+}
+.section-desc {
+  font-size: 1.02rem; color: var(--earth-mid); line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--earth); color: rgba(255,255,255,0.5);
+  padding: 3rem 5vw; text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.logo-footer {
+  font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800;
+  color: white; margin-bottom: 8px;
+}
+.logo-footer span { color: var(--amber); }
+footer p { font-size: 0.85rem; }
+
+/* ── SCROLL ANIMATIONS ── */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE NAV ── */
+@media (max-width: 700px) {
+  .nav-links { gap: 1rem; }
+  .nav-links a { font-size: 0.78rem; }
+}
+@media (max-width: 520px) {
+  .nav-links .hide-mobile { display: none; }
+}

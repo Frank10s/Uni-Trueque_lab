@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uni-Trueque — Catálogo</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { background: var(--cream); }
+  .catalog-hero {
+    background: var(--white); padding: 100px 5vw 40px;
+    border-bottom: 1px solid rgba(26,122,74,0.08);
+  }
+  .catalog-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem,4vw,3rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem; }
+  .catalog-hero p { color: var(--earth-mid); font-size: 1rem; margin-bottom: 1.8rem; }
+
+  /* SEARCH BAR */
+  .search-bar {
+    display: flex; gap: 12px; margin-bottom: 1.5rem;
+  }
+  .search-input {
+    flex: 1; padding: 12px 18px; border-radius: 14px;
+    border: 1.5px solid rgba(0,0,0,0.1); font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem; outline: none; background: var(--cream);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,122,74,0.09); }
+  .search-btn { padding: 12px 24px; border-radius: 14px; background: var(--green); color: white; border: none; font-weight: 600; font-size: 0.92rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+  .search-btn:hover { background: var(--green-light); }
+
+  .filters-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-chip {
+    padding: 7px 18px; border-radius: 100px; font-size: 0.84rem; font-weight: 500;
+    cursor: pointer; border: 1.5px solid transparent; transition: all 0.2s;
+    background: var(--gray-light); color: var(--earth-mid);
+  }
+  .filter-chip.active, .filter-chip:hover { background: var(--green); color: white; box-shadow: 0 4px 14px rgba(26,122,74,0.2); }
+
+  /* LAYOUT */
+  .catalog-body { display: grid; grid-template-columns: 220px 1fr; gap: 2rem; padding: 2.5rem 5vw; align-items: start; }
+
+  /* SIDEBAR */
+  .sidebar { position: sticky; top: 88px; }
+  .sidebar-card { background: white; border-radius: 18px; padding: 1.5rem; margin-bottom: 1.2rem; border: 1.5px solid rgba(26,122,74,0.07); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+  .sidebar-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); }
+  .sidebar-opt { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 0.88rem; cursor: pointer; border-radius: 8px; transition: color 0.15s; }
+  .sidebar-opt input[type=checkbox] { accent-color: var(--green); width: 15px; height: 15px; cursor: pointer; }
+  .sidebar-opt:hover { color: var(--green); }
+  .sidebar-count { margin-left: auto; font-size: 0.75rem; color: var(--gray); background: var(--gray-light); padding: 2px 8px; border-radius: 100px; }
+
+  /* PRODUCTS GRID */
+  .grid-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .grid-header span { font-size: 0.88rem; color: var(--gray); }
+  .sort-select { padding: 7px 14px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.1); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; background: white; color: var(--earth); outline: none; cursor: pointer; }
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.4rem; }
+
+  .product-card {
+    background: white; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+    transition: transform 0.25s, box-shadow 0.25s;
+    border: 1.5px solid rgba(0,0,0,0.04); cursor: pointer;
+  }
+  .product-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(26,122,74,0.14); border-color: rgba(26,122,74,0.15); }
+  .card-img { height: 150px; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; }
+  .card-body { padding: 14px 16px; }
+  .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 600; background: var(--green-pale); color: var(--green); }
+  .tag.amber { background: #fff4e0; color: #b87a00; }
+  .tag.blue { background: #e5f0ff; color: #1a5ab7; }
+  .tag.pink { background: #ffe5f0; color: #b71a5a; }
+  .card-status { font-size: 0.7rem; color: var(--gray); display: flex; align-items: center; gap: 4px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-light); display: inline-block; }
+  .dot.amber { background: var(--amber); }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+  .card-desc { font-size: 0.8rem; color: var(--earth-mid); line-height: 1.5; margin-bottom: 12px; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--gray-light); }
+  .card-user { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--gray); }
+  .avatar-sm { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.62rem; font-weight: 700; }
+  .btn-contact { background: var(--green); color: white; padding: 6px 14px; border-radius: 100px; font-size: 0.75rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
+  .btn-contact:hover { background: var(--green-light); transform: scale(1.04); }
+
+  @media (max-width: 800px) { .catalog-body { grid-template-columns: 1fr; } .sidebar { position: static; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">🌿 Uni<span>-Trueque</span></a>
+  <div class="nav-links">
+    <a href="catalogo.html" class="active">Catálogo</a>
+    <a href="publicar.html" class="hide-mobile">Publicar</a>
+    <a href="perfil.html" class="hide-mobile">Mi perfil</a>
+    <a href="impacto.html" class="hide-mobile">Impacto</a>
+    <a href="login.html" class="btn-nav">Ingresar</a>
+  </div>
+</nav>
+
+<div class="page-content">
+  <div class="catalog-hero">
+    <div class="section-label">Catálogo</div>
+    <h1>Explora productos disponibles</h1>
+    <p>Encuentra materiales que necesitas e intercámbialos con compañeros de tu universidad.</p>
+    <div class="search-bar">
+      <input class="search-input" type="text" placeholder="🔍  Buscar libros, útiles, electrónica..." />
+      <button class="search-btn">Buscar</button>
+      <a href="publicar.html" class="btn-primary" style="border-radius:14px;white-space:nowrap">+ Publicar</a>
+    </div>
+    <div class="filters-row">
+      <button class="filter-chip active">Todos</button>
+      <button class="filter-chip">📚 Libros</button>
+      <button class="filter-chip">✏️ Útiles</button>
+      <button class="filter-chip">💻 Electrónica</button>
+      <button class="filter-chip">🧪 Laboratorio</button>
+      <button class="filter-chip">📐 Instrumentos</button>
+      <button class="filter-chip">👕 Indumentaria</button>
+    </div>
+  </div>
+
+  <div class="catalog-body">
+    <!-- SIDEBAR -->
+    <aside class="sidebar reveal">
+      <div class="sidebar-card">
+        <h4>Facultad</h4>
+        <label class="sidebar-opt"><input type="checkbox" checked> Ing. Sistemas <span class="sidebar-count">128</span></label>
+        <label class="sidebar-opt"><input type="checkbox"> Medicina <span class="sidebar-count">94</span></label>
+        <label class="sidebar-opt"><input type="checkbox"> Arquitectura <span class="sidebar-count">77</span></label>
+        <label class="sidebar-opt"><input type="checkbox"> Administración <span class="sidebar-count">63</span></label>
+        <label class="sidebar-opt"><input type="checkbox"> Derecho <span class="sidebar-count">41</span></label>
+        <label class="sidebar-opt"><input type="checkbox"> Psicología <span class="sidebar-count">38</span></label>
+      </div>
+      <div class="sidebar-card">
+        <h4>Estado</h4>
+        <label class="sidebar-opt"><input type="checkbox" checked> 🆕 Nuevo <span class="sidebar-count">203</span></label>
+        <label class="sidebar-opt"><input type="checkbox" checked> ✅ Muy bueno <span class="sidebar-count">314</span></label>
+        <label class="sidebar-opt"><input type="checkbox"> 👍 Bueno <span class="sidebar-count">246</span></label>
+        <label class="sidebar-opt"><input type="checkbox"> ⚠️ Regular <span class="sidebar-count">84</span></label>
+      </div>
+      <div class="sidebar-card">
+        <h4>Disponibilidad</h4>
+        <label class="sidebar-opt"><input type="checkbox" checked> Disponible <span class="sidebar-count">621</span></label>
+        <label class="sidebar-opt"><input type="checkbox"> Reservado <span class="sidebar-count">226</span></label>
+      </div>
+    </aside>
+
+    <!-- MAIN GRID -->
+    <div>
+      <div class="grid-header reveal">
+        <span>847 productos encontrados</span>
+        <select class="sort-select">
+          <option>Más recientes</option>
+          <option>Más populares</option>
+          <option>A → Z</option>
+        </select>
+      </div>
+      <div class="products-grid reveal">
+
+        <div class="product-card">
+          <div class="card-img" style="background:linear-gradient(135deg,#e8f5ee,#c6ecd8)">📐</div>
+          <div class="card-body">
+            <div class="card-top"><span class="tag">✏️ Útiles</span><span class="card-status"><span class="dot"></span>Disponible</span></div>
+            <div class="card-title">Set instrumentos de dibujo</div>
+            <div class="card-desc">Compás, escuadras, transportador. Casi sin uso, ideal para arquitectura.</div>
+            <div class="card-footer">
+              <div class="card-user"><div class="avatar-sm" style="background:linear-gradient(135deg,#c6ecd8,#2eb870)">KR</div>Karen R. · Arq.</div>
+              <button class="btn-contact">Intercambiar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="card-img" style="background:linear-gradient(135deg,#e5f0ff,#c2d8ff)">📊</div>
+          <div class="card-body">
+            <div class="card-top"><span class="tag">📚 Libros</span><span class="card-status"><span class="dot"></span>Disponible</span></div>
+            <div class="card-title">Estadística para Administración</div>
+            <div class="card-desc">Anderson 13ª ed. Buen estado, subrayados mínimos en lápiz.</div>
+            <div class="card-footer">
+              <div class="card-user"><div class="avatar-sm" style="background:linear-gradient(135deg,#c2d8ff,#99bbff)">JP</div>José P. · Adm.</div>
+              <button class="btn-contact">Intercambiar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="card-img" style="background:linear-gradient(135deg,#fff4e0,#ffe0a0)">🔬</div>
+          <div class="card-body">
+            <div class="card-top"><span class="tag amber">🧪 Laboratorio</span><span class="card-status"><span class="dot amber"></span>Reservado</span></div>
+            <div class="card-title">Bata de laboratorio talla M</div>
+            <div class="card-desc">Blanca, usada solo 2 prácticas. Perfecta para química y biología.</div>
+            <div class="card-footer">
+              <div class="card-user"><div class="avatar-sm" style="background:linear-gradient(135deg,#ffe0a0,#f5a623)">LM</div>Lucía M. · Med.</div>
+              <button class="btn-contact" style="background:var(--amber)">Contactar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="card-img" style="background:linear-gradient(135deg,#f0e8ff,#d9c2ff)">💾</div>
+          <div class="card-body">
+            <div class="card-top"><span class="tag blue">💻 Electrónica</span><span class="card-status"><span class="dot"></span>Disponible</span></div>
+            <div class="card-title">Disco duro externo 1TB</div>
+            <div class="card-desc">WD Elements, USB 3.0, perfecto estado. Busco libros de programación.</div>
+            <div class="card-footer">
+              <div class="card-user"><div class="avatar-sm" style="background:linear-gradient(135deg,#d9c2ff,#b399ff)">MV</div>Mario V. · Ing.</div>
+              <button class="btn-contact">Intercambiar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="card-img" style="background:linear-gradient(135deg,#e8f5ee,#fef9e7)">📗</div>
+          <div class="card-body">
+            <div class="card-top"><span class="tag">📚 Libros</span><span class="card-status"><span class="dot"></span>Disponible</span></div>
+            <div class="card-title">Cálculo III — Stewart 8va ed.</div>
+            <div class="card-desc">Tapa dura, excelente estado. Incluye CD de ejercicios resueltos.</div>
+            <div class="card-footer">
+              <div class="card-user"><div class="avatar-sm" style="background:linear-gradient(135deg,#ffe0a0,#f5a623)">AM</div>Ana M. · Ing. Sis.</div>
+              <button class="btn-contact">Intercambiar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="card-img" style="background:linear-gradient(135deg,#ffe5f0,#ffb3d4)">🩺</div>
+          <div class="card-body">
+            <div class="card-top"><span class="tag pink">🩺 Medicina</span><span class="card-status"><span class="dot"></span>Disponible</span></div>
+            <div class="card-title">Atlas de Anatomía — Netter</div>
+            <div class="card-desc">7ª edición, tapa dura. Algunas páginas marcadas con fosforescente.</div>
+            <div class="card-footer">
+              <div class="card-user"><div class="avatar-sm" style="background:linear-gradient(135deg,#ffb3d4,#ff6aa7)">CR</div>Carlos R. · Med.</div>
+              <button class="btn-contact">Intercambiar</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="logo-footer">🌿 Uni<span>-Trueque</span></div>
+  <p>Intercambia materiales · Solo para @continental.edu.pe · © 2026</p>
+</footer>
+
+<script>
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.addEventListener('click', () => { document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active')); c.classList.add('active'); });
+  });
+  const obs = new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

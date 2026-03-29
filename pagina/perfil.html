@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uni-Trueque — Mi Perfil</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { background: var(--cream); }
+
+  .profile-hero {
+    background: linear-gradient(135deg, var(--green) 0%, #0f5c35 100%);
+    padding: 100px 5vw 60px; color: white; position: relative; overflow: hidden;
+  }
+  .profile-hero::before {
+    content:''; position:absolute; top:-100px; right:-100px;
+    width:500px; height:500px;
+    background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+    border-radius:50%;
+  }
+  .profile-hero-inner { display:flex; align-items:center; gap:2.5rem; position:relative; z-index:1; }
+  .big-avatar {
+    width:100px; height:100px; border-radius:50%;
+    background: linear-gradient(135deg, var(--amber-light), var(--amber));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Syne',sans-serif; font-size:2.4rem; font-weight:800; color:var(--earth);
+    flex-shrink:0; border:3px solid rgba(255,255,255,0.3);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .profile-info h1 { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; margin-bottom:4px; letter-spacing:-0.5px; }
+  .profile-info .faculty { font-size:0.95rem; opacity:0.8; margin-bottom:4px; }
+  .profile-info .email { font-size:0.85rem; opacity:0.6; }
+  .profile-badges { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .badge { padding:5px 14px; border-radius:100px; font-size:0.78rem; font-weight:600; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); }
+  .badge.gold { background:rgba(245,166,35,0.3); color:var(--amber-light); border-color:rgba(245,166,35,0.4); }
+  .edit-btn { margin-left:auto; padding:10px 22px; border-radius:100px; background:rgba(255,255,255,0.15); color:white; border:1.5px solid rgba(255,255,255,0.3); font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+  .edit-btn:hover { background:rgba(255,255,255,0.25); }
+
+  .stats-strip {
+    background:var(--white); padding:1.5rem 5vw;
+    display:grid; grid-template-columns:repeat(5,1fr);
+    border-bottom:1px solid rgba(26,122,74,0.08);
+    box-shadow:0 4px 16px rgba(0,0,0,0.04);
+  }
+  .sstat { text-align:center; padding:0.5rem; }
+  .sstat-num { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--green); letter-spacing:-1px; }
+  .sstat-label { font-size:0.78rem; color:var(--gray); margin-top:2px; }
+
+  .profile-body { display:grid; grid-template-columns:300px 1fr; gap:2rem; padding:2.5rem 5vw; align-items:start; }
+
+  /* SIDEBAR */
+  .p-sidebar { display:flex; flex-direction:column; gap:1.5rem; }
+  .p-card { background:white; border-radius:20px; padding:1.8rem; box-shadow:var(--shadow); border:1.5px solid rgba(26,122,74,0.07); }
+  .p-card h3 { font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; margin-bottom:1.2rem; color:var(--gray); text-transform:uppercase; letter-spacing:0.5px; font-size:0.78rem; }
+  .achievement { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--gray-light); }
+  .achievement:last-child { border-bottom:none; padding-bottom:0; }
+  .ach-icon { font-size:1.6rem; width:38px; text-align:center; }
+  .ach-info h5 { font-size:0.85rem; font-weight:600; margin-bottom:2px; }
+  .ach-info p { font-size:0.75rem; color:var(--gray); }
+  .ach-check { margin-left:auto; color:var(--green); font-size:1.1rem; }
+  .impact-summary { background:var(--green-pale); border-radius:14px; padding:1.2rem; text-align:center; }
+  .impact-summary .big { font-family:'Syne',sans-serif; font-size:2.5rem; font-weight:800; color:var(--green); letter-spacing:-1px; }
+  .impact-summary p { font-size:0.82rem; color:var(--earth-mid); margin-top:4px; }
+
+  /* MAIN */
+  .p-main { display:flex; flex-direction:column; gap:1.5rem; }
+  .tabs { display:flex; gap:4px; background:white; padding:6px; border-radius:16px; box-shadow:var(--shadow); border:1.5px solid rgba(26,122,74,0.07); width:fit-content; }
+  .tab { padding:8px 20px; border-radius:12px; font-size:0.88rem; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:'DM Sans',sans-serif; color:var(--earth-mid); transition:all 0.2s; }
+  .tab.active { background:var(--green); color:white; box-shadow:0 4px 12px rgba(26,122,74,0.25); }
+
+  .history-list { display:flex; flex-direction:column; gap:1rem; }
+  .h-item {
+    background:white; border-radius:16px; padding:16px 20px;
+    display:flex; align-items:center; gap:16px;
+    box-shadow:0 2px 12px rgba(0,0,0,0.05); border:1.5px solid rgba(0,0,0,0.04);
+    transition:transform 0.2s, box-shadow 0.2s;
+  }
+  .h-item:hover { transform:translateX(4px); box-shadow:0 6px 24px rgba(26,122,74,0.10); }
+  .h-emoji { font-size:2rem; width:50px; text-align:center; }
+  .h-info h4 { font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; margin-bottom:3px; }
+  .h-info p { font-size:0.8rem; color:var(--gray); }
+  .h-badge { margin-left:auto; padding:5px 14px; border-radius:100px; font-size:0.73rem; font-weight:600; white-space:nowrap; }
+  .h-badge.done { background:var(--green-pale); color:var(--green); }
+  .h-badge.active { background:#fff4e0; color:#b87a00; }
+  .h-badge.pub { background:var(--gray-light); color:var(--gray); }
+  .h-date { font-size:0.72rem; color:var(--gray); margin-top:2px; }
+
+  .mini-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+  .mini-pub-card { background:white; border-radius:16px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.05); border:1.5px solid rgba(0,0,0,0.04); transition:transform 0.2s; }
+  .mini-pub-card:hover { transform:translateY(-4px); }
+  .mini-img { height:90px; display:flex; align-items:center; justify-content:center; font-size:3rem; }
+  .mini-body { padding:10px 12px; }
+  .mini-title { font-family:'Syne',sans-serif; font-size:0.82rem; font-weight:700; margin-bottom:3px; }
+  .mini-meta { font-size:0.72rem; color:var(--gray); }
+
+  @media (max-width:900px) { .profile-body { grid-template-columns:1fr; } .stats-strip { grid-template-columns:repeat(3,1fr); } .mini-grid { grid-template-columns:1fr 1fr; } .profile-hero-inner { flex-wrap:wrap; } .edit-btn { margin-left:0; } }
+  @media (max-width:500px) { .stats-strip { grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">🌿 Uni<span>-Trueque</span></a>
+  <div class="nav-links">
+    <a href="catalogo.html" class="hide-mobile">Catálogo</a>
+    <a href="publicar.html" class="hide-mobile">Publicar</a>
+    <a href="perfil.html" class="active">Mi perfil</a>
+    <a href="impacto.html" class="hide-mobile">Impacto</a>
+    <a href="login.html" class="btn-nav">Ingresar</a>
+  </div>
+</nav>
+
+<div class="page-content">
+  <div class="profile-hero">
+    <div class="profile-hero-inner">
+      <div class="big-avatar">FS</div>
+      <div class="profile-info">
+        <h1>Frank Smit Huarancca Camala</h1>
+        <div class="faculty">🏛 Ingeniería de Sistemas · 5to semestre</div>
+        <div class="email">60989618@continental.edu.pe</div>
+        <div class="profile-badges">
+          <span class="badge gold">🏆 Top 5% de la facultad</span>
+          <span class="badge">⭐ Reputación 4.9</span>
+          <span class="badge">✅ Verificado @continental.edu.pe</span>
+        </div>
+      </div>
+      <button class="edit-btn">✏️ Editar perfil</button>
+    </div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="sstat"><div class="sstat-num">12</div><div class="sstat-label">Publicados</div></div>
+    <div class="sstat"><div class="sstat-num">8</div><div class="sstat-label">Intercambiados</div></div>
+    <div class="sstat"><div class="sstat-num">2.4<small style="font-size:1rem">kg</small></div><div class="sstat-label">Materiales ahorrados</div></div>
+    <div class="sstat"><div class="sstat-num">4.9</div><div class="sstat-label">Reputación</div></div>
+    <div class="sstat"><div class="sstat-num">23</div><div class="sstat-label">Días activa</div></div>
+  </div>
+
+  <div class="profile-body">
+    <!-- SIDEBAR -->
+    <aside class="p-sidebar reveal">
+      <div class="p-card">
+        <h3>Impacto personal</h3>
+        <div class="impact-summary">
+          <div class="big">8</div>
+          <p>productos reutilizados gracias a ti 🌍</p>
+        </div>
+      </div>
+      <div class="p-card">
+        <h3>Logros desbloqueados</h3>
+        <div class="achievement"><span class="ach-icon">🌱</span><div class="ach-info"><h5>Primer trueque</h5><p>Completaste tu primer intercambio</p></div><span class="ach-check">✓</span></div>
+        <div class="achievement"><span class="ach-icon">📚</span><div class="ach-info"><h5>Bibliófilo</h5><p>Intercambiaste 5 libros</p></div><span class="ach-check">✓</span></div>
+        <div class="achievement"><span class="ach-icon">🏆</span><div class="ach-info"><h5>Top contribuidor</h5><p>Top 5% de tu facultad</p></div><span class="ach-check">✓</span></div>
+        <div class="achievement" style="opacity:0.4"><span class="ach-icon">🌳</span><div class="ach-info"><h5>Guardián del planeta</h5><p>Ahorra 10kg de materiales</p></div><span class="ach-check" style="color:var(--gray)">○</span></div>
+        <div class="achievement" style="opacity:0.4"><span class="ach-icon">⭐</span><div class="ach-info"><h5>Reputación perfecta</h5><p>Mantén 5.0 por 30 días</p></div><span class="ach-check" style="color:var(--gray)">○</span></div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="p-main reveal">
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('historial',this)">📋 Historial</button>
+        <button class="tab" onclick="showTab('publicados',this)">📦 Publicados</button>
+        <button class="tab" onclick="showTab('mensajes',this)">💬 Mensajes</button>
+      </div>
+
+      <!-- HISTORIAL -->
+      <div id="tab-historial">
+        <div class="history-list">
+          <div class="h-item">
+            <div class="h-emoji">📚</div>
+            <div class="h-info">
+              <h4>Álgebra Lineal — Grossman</h4>
+              <p>Intercambiado con Carlos R. · Ing. Civil</p>
+              <div class="h-date">Hace 3 días</div>
+            </div>
+            <span class="h-badge done">✓ Completado</span>
+          </div>
+          <div class="h-item">
+            <div class="h-emoji">💻</div>
+            <div class="h-info">
+              <h4>Teclado mecánico 60%</h4>
+              <p>Solicitud de Valeria M. · Diseño Gráfico</p>
+              <div class="h-date">Hace 1 semana</div>
+            </div>
+            <span class="h-badge active">⏳ En proceso</span>
+          </div>
+          <div class="h-item">
+            <div class="h-emoji">📐</div>
+            <div class="h-info">
+              <h4>Calculadora Casio FX-991</h4>
+              <p>Intercambiado con Pedro L. · Administración</p>
+              <div class="h-date">Hace 2 semanas</div>
+            </div>
+            <span class="h-badge done">✓ Completado</span>
+          </div>
+          <div class="h-item">
+            <div class="h-emoji">🔬</div>
+            <div class="h-info">
+              <h4>Microscopio portátil 40x</h4>
+              <p>Publicado · Sin solicitudes aún</p>
+              <div class="h-date">Hace 1 mes</div>
+            </div>
+            <span class="h-badge pub">Publicado</span>
+          </div>
+          <div class="h-item">
+            <div class="h-emoji">📗</div>
+            <div class="h-info">
+              <h4>Introducción a la IA — Russel & Norvig</h4>
+              <p>Intercambiado con Diana S. · Ing. Sistemas</p>
+              <div class="h-date">Hace 6 semanas</div>
+            </div>
+            <span class="h-badge done">✓ Completado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PUBLICADOS -->
+      <div id="tab-publicados" style="display:none">
+        <div class="mini-grid">
+          <div class="mini-pub-card"><div class="mini-img" style="background:linear-gradient(135deg,#e8f5ee,#c6ecd8)">🔬</div><div class="mini-body"><div class="mini-title">Microscopio 40x</div><div class="mini-meta">🧪 Laboratorio · Activo</div></div></div>
+          <div class="mini-pub-card"><div class="mini-img" style="background:linear-gradient(135deg,#fff4e0,#ffe0a0)">💻</div><div class="mini-body"><div class="mini-title">Teclado mecánico</div><div class="mini-meta">💻 Electrónica · En proceso</div></div></div>
+          <div class="mini-pub-card"><div class="mini-img" style="background:linear-gradient(135deg,#e5f0ff,#c2d8ff)">📗</div><div class="mini-body"><div class="mini-title">Cálculo III</div><div class="mini-meta">📚 Libros · Completado</div></div></div>
+          <div class="mini-pub-card" style="border:2px dashed rgba(26,122,74,0.3);background:var(--green-pale);cursor:pointer" onclick="location.href='publicar.html'"><div class="mini-img" style="background:transparent;color:var(--green)">+</div><div class="mini-body"><div class="mini-title" style="color:var(--green)">Publicar nuevo</div><div class="mini-meta" style="color:var(--green);opacity:0.7">Añadir producto</div></div></div>
+        </div>
+      </div>
+
+      <!-- MENSAJES -->
+      <div id="tab-mensajes" style="display:none">
+        <div class="history-list">
+          <div class="h-item" style="background:var(--green-pale);border-color:rgba(26,122,74,0.15)">
+            <div class="h-emoji">👤</div>
+            <div class="h-info"><h4>Valeria M.</h4><p>Hola! Me interesa el teclado, ¿podemos coordinar?</p><div class="h-date">Hace 2 horas · Sin responder</div></div>
+            <span class="h-badge active">Nuevo</span>
+          </div>
+          <div class="h-item">
+            <div class="h-emoji">👤</div>
+            <div class="h-info"><h4>Carlos R.</h4><p>Gracias por el intercambio, todo perfecto 👍</p><div class="h-date">Hace 3 días</div></div>
+            <span class="h-badge done">Respondido</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="logo-footer">🌿 Uni<span>-Trueque</span></div>
+  <p>Intercambia materiales · Solo para @continental.edu.pe · © 2026</p>
+</footer>
+
+<script>
+  function showTab(id, btn) {
+    document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+    document.getElementById('tab-' + id).style.display = 'block';
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const obs = new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

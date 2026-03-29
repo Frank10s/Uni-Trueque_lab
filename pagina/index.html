@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uni-Trueque — Inicio</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { background: var(--cream); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; gap: 0;
+    padding: 120px 5vw 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -80px; right: -120px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(46,184,112,0.12) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -100px; left: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--green-pale); color: var(--green);
+    border: 1px solid rgba(26,122,74,0.2);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.3px;
+    margin-bottom: 1.5rem; animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 5.5vw, 4.6rem);
+    font-weight: 800; line-height: 1.06; letter-spacing: -2px;
+    margin-bottom: 1.4rem; animation: fadeUp 0.6s ease 0.1s both;
+  }
+  .hero h1 em { font-style: normal; color: var(--green); }
+  .hero h1 .accent { color: var(--amber); }
+  .hero-desc {
+    font-size: 1.1rem; line-height: 1.75; color: var(--earth-mid);
+    max-width: 490px; margin-bottom: 2.2rem;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+  .hero-cta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.6s ease 0.3s both; }
+  .hero-stats {
+    display: flex; gap: 2.5rem; margin-top: 3rem;
+    padding-top: 2rem; border-top: 1px solid rgba(26,122,74,0.12);
+    animation: fadeUp 0.6s ease 0.4s both;
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--green); letter-spacing: -1px; }
+  .stat-label { font-size: 0.8rem; color: var(--gray); }
+
+  /* PHONE MOCKUP */
+  .hero-visual { display: flex; justify-content: center; align-items: center; position: relative; animation: fadeUp 0.8s ease 0.2s both; }
+  .phone-mockup {
+    width: 290px; background: var(--white); border-radius: 32px; padding: 20px;
+    box-shadow: 0 24px 80px rgba(26,122,74,0.18), 0 4px 16px rgba(0,0,0,0.06);
+    position: relative; z-index: 2; border: 1.5px solid rgba(26,122,74,0.12);
+  }
+  .phone-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .phone-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--green); }
+  .phone-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green-light), var(--green));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.8rem; font-weight: 700;
+  }
+  .card-mini { background: var(--gray-light); border-radius: 16px; overflow: hidden; margin-bottom: 10px; }
+  .card-mini-img { height: 90px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+  .card-mini-body { padding: 8px 12px 4px; }
+  .tag-mini { background: var(--green-pale); color: var(--green); font-size: 0.66rem; font-weight: 600; padding: 2px 7px; border-radius: 100px; }
+  .card-mini-title { font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; margin: 3px 0 2px; }
+  .card-mini-sub { font-size: 0.7rem; color: var(--gray); margin-bottom: 8px; }
+  .card-mini-btns { display: flex; gap: 6px; padding: 0 12px 10px; }
+  .mini-btn { flex: 1; padding: 6px; border-radius: 8px; font-size: 0.7rem; font-weight: 600; border: none; cursor: pointer; }
+  .mini-btn.p { background: var(--green); color: white; }
+  .mini-btn.s { background: #e8e4df; color: var(--earth-mid); }
+
+  .float-badge {
+    position: absolute; background: white; border-radius: 16px;
+    padding: 10px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.82rem; font-weight: 600;
+    animation: floatY 3s ease-in-out infinite;
+    border: 1px solid rgba(26,122,74,0.1);
+  }
+  .float-badge.a { top: 8%; right: -6%; animation-delay: 0s; }
+  .float-badge.b { bottom: 12%; left: -10%; animation-delay: 1.5s; }
+
+  /* QUICK LINKS SECTION */
+  .quick { padding: 80px 5vw; background: var(--white); }
+  .quick h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 2.5rem; letter-spacing: -0.5px; }
+  .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .quick-card {
+    background: var(--cream); border-radius: 20px; padding: 2rem 1.5rem;
+    text-align: center; text-decoration: none; color: var(--earth);
+    border: 1.5px solid rgba(26,122,74,0.08);
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.2s;
+  }
+  .quick-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(26,122,74,0.12); border-color: var(--green); }
+  .quick-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+  .quick-card h3 { font-family: 'Syne', sans-serif; font-size: 0.98rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .quick-card p { font-size: 0.82rem; color: var(--gray); line-height: 1.5; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .hero-visual { display: none; } .quick-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 500px) { .quick-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">🌿 Uni<span>-Trueque</span></a>
+  <div class="nav-links">
+    <a href="catalogo.html" class="hide-mobile">Catálogo</a>
+    <a href="publicar.html" class="hide-mobile">Publicar</a>
+    <a href="perfil.html" class="hide-mobile">Mi perfil</a>
+    <a href="impacto.html" class="hide-mobile">Impacto</a>
+    <a href="login.html" class="btn-nav">Ingresar</a>
+  </div>
+</nav>
+
+<div class="page-content">
+  <section class="hero">
+    <div>
+      <div class="hero-badge">🌱 Plataforma universitaria de economía circular</div>
+      <h1>Intercambia,<br><em>reutiliza</em> y<br><span class="accent">cuida</span> el planeta.</h1>
+      <p class="hero-desc">Uni-Trueque conecta estudiantes universitarios para intercambiar materiales de estudio, fomentando el reciclaje y la colaboración dentro de tu facultad.</p>
+      <div class="hero-cta">
+        <a href="login.html" class="btn-primary">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Ingresar con correo institucional
+        </a>
+        <a href="catalogo.html" class="btn-secondary">Ver catálogo →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">847</span><span class="stat-label">Productos activos</span></div>
+        <div class="stat"><span class="stat-num">1.2K</span><span class="stat-label">Intercambios</span></div>
+        <div class="stat"><span class="stat-num">340</span><span class="stat-label">kg ahorrados</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone-mockup">
+        <div class="phone-header">
+          <span class="phone-title">🌿 Uni-Trueque</span>
+          <div class="phone-avatar">AM</div>
+        </div>
+        <div class="card-mini">
+          <div class="card-mini-img" style="background:linear-gradient(135deg,#e8f5ee,#c6ecd8)">📚</div>
+          <div class="card-mini-body">
+            <span class="tag-mini">📗 Libros</span>
+            <div class="card-mini-title">Cálculo III — Stewart</div>
+            <div class="card-mini-sub">Ing. Sistemas · Buen estado</div>
+          </div>
+          <div class="card-mini-btns"><button class="mini-btn p">Intercambiar</button><button class="mini-btn s">Contactar</button></div>
+        </div>
+        <div class="card-mini">
+          <div class="card-mini-img" style="background:linear-gradient(135deg,#e5f0ff,#c2d8ff)">💻</div>
+          <div class="card-mini-body">
+            <span class="tag-mini">⚡ Electrónica</span>
+            <div class="card-mini-title">Mouse inalámbrico</div>
+            <div class="card-mini-sub">Arquitectura · Nuevo</div>
+          </div>
+          <div class="card-mini-btns"><button class="mini-btn p">Intercambiar</button><button class="mini-btn s">Contactar</button></div>
+        </div>
+      </div>
+      <div class="float-badge a">♻️ <span>5 productos<br><small style="font-weight:400;opacity:.7">reutilizados hoy</small></span></div>
+      <div class="float-badge b">🏆 <span>Ing. Sistemas<br><small style="font-weight:400;opacity:.7">más activa</small></span></div>
+    </div>
+  </section>
+
+  <section class="quick reveal">
+    <h2>¿A dónde quieres ir?</h2>
+    <div class="quick-grid">
+      <a href="catalogo.html" class="quick-card">
+        <div class="quick-icon">🛍</div>
+        <h3>Catálogo</h3>
+        <p>Explora productos disponibles filtrando por categoría y facultad.</p>
+      </a>
+      <a href="publicar.html" class="quick-card">
+        <div class="quick-icon">📦</div>
+        <h3>Publicar</h3>
+        <p>Comparte lo que ya no usas y conéctate con quien lo necesita.</p>
+      </a>
+      <a href="perfil.html" class="quick-card">
+        <div class="quick-icon">👤</div>
+        <h3>Mi perfil</h3>
+        <p>Revisa tu historial de intercambios y tus estadísticas personales.</p>
+      </a>
+      <a href="impacto.html" class="quick-card">
+        <div class="quick-icon">🌍</div>
+        <h3>Impacto</h3>
+        <p>Ve el impacto ambiental real generado por la comunidad.</p>
+      </a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="logo-footer">🌿 Uni<span>-Trueque</span></div>
+  <p>Intercambia materiales y fomenta el reciclaje en tu universidad · Solo para @continental.edu.pe</p>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
